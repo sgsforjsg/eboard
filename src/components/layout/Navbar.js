@@ -4,6 +4,7 @@ import SignedInLinks from './SignedInLinks'
 import SignedOutLinks from './SignedOutLinks'
 import { connect } from 'react-redux'
 import M from "materialize-css";
+import { NavLink } from 'react-router-dom'
 const Navbar = (props) => {
   const { auth, profile } = props;
   const links = auth.uid ? <SignedInLinks profile={profile} /> : <SignedOutLinks />;
@@ -18,8 +19,8 @@ const Navbar = (props) => {
   return (
     <nav>
       <div className="nav-wrapper">
-        <a href="#!" className="brand-logo">JSG,Bharuch</a>
-        {links}
+      < NavLink to='/view'  className="brand-logo center">JSG,Bharuch</NavLink> 
+      
         <ul
           ref={(Sidenav) => {
             Sidenav = Sidenav;
@@ -27,20 +28,26 @@ const Navbar = (props) => {
           id="slide-out"
           className="sidenav sidenav-close"
         >
-
+   <li><a>Second Link</a></li>
 
           <li>
             <div className="divider" />
           </li>
+          
           <li>
             <a className="subheader">Subheader</a>
-          </li>
 
+          </li>
+         
+
+          {links}
+          <li><a><button>Close</button></a></li>
         </ul>
-        <a href="#!" data-target="slide-out" className="sidenav-trigger">
+        <a href="#!" data-target="slide-out" className="sidenav-trigger show-on-large">
           <i className="material-icons">menu</i>
         </a>
       </div>
+     
     </nav>
   )
 }

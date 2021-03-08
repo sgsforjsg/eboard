@@ -24,7 +24,8 @@ class EditNotice extends Component {
   handleChange1 = (e) => {
     e.preventDefault();
     const cid = [e.target.id]
-    this.props.editProject(this.state);
+    //this.props.editProject(this.state);
+    console.log(this.state)
   }
  
   handlecheckbox = (e) => {

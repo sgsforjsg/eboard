@@ -10,9 +10,9 @@ export const editNotice = (project) => {
       authorId: authorId,
       createdAt: new Date()
     }).then(() => {
-      dispatch({ type: 'CREATE_Hopital_SUCCESS' });
+      dispatch({ type: 'CREATE_Notice_SUCCESS' });
     }).catch(err => {
-      dispatch({ type: 'CREATE_Hospital_ERROR' }, err);
+      dispatch({ type: 'CREATE_Notice_ERROR' }, err);
     });
   }
 };

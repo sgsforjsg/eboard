@@ -6,27 +6,36 @@ import { connect } from "react-redux";
 import { useDispatch } from 'react-redux'
 import FileUploader from "react-firebase-file-uploader";
 import { createProject } from '../../store/actions/noticeActions'
-
 //import { Redirect } from 'react-router-dom'
 import M from "materialize-css";
 
-const CreateNotice1 = ({ project }) => {
-  // console.log(project) 
+const CreateNotice1 = ({ project,id }) => {
+  console.log(project,id)
   useEffect(() => {
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems, {});
+    var elems1 = document.querySelectorAll('.materialboxed');
+    var instances = M.Materialbox.init(elems1, {});
   }, []);
 
 
-  const { register, handleSubmit,setValue } = useForm({defaultValues:{
-    furl:"-"
-  }})
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      furl:id!=='a'? project.furl:'',
+      dept:id!=='a'? project.dept:'',
+      firstName:id!=='a'? project.firstName:'',
+      title:id!=='a'? project.title:'',
+      age:id!=='a'? project.age:'',
+      uploadProgress: 0,
+      id1:id
+    }
+  })
   const dispatch = useDispatch();
   const onSubmit = data => {
-    alert('subit')
+
     console.log(data)
     //alert('p')
-    //dispatch(createProject(data))
+     dispatch(createProject(data))
   }
   const myFunction = (e) => {
     const { value } = e.target;
@@ -68,10 +77,27 @@ const CreateNotice1 = ({ project }) => {
       .child(filename)
       .getDownloadURL().then((url) => {
         setValue("furl", url)
-        console.log(url,'url')
-      }); 
-    console.log(downloadURL)
+        console.log(url, 'url')
+      });
+    console.log(filename)
   };
+  const handleProgress = progress => {
+    setValue('uploadProgress', progress)
+    console.log(progress)
+      ;
+  }
+  const deletefile = (e) => {
+    e.preventDefault();
+    var fileRef = firebase.storage().refFromURL(project.furl);
+    fileRef.delete().then(function () {
+
+      // File deleted successfully 
+      console.log("File Deleted")
+    }).catch(function (error) {
+      // Some Error occurred 
+    });
+    console.log('delete file sucessfully')
+  }
   return (
     <div className="container">
       <form>
@@ -79,18 +105,21 @@ const CreateNotice1 = ({ project }) => {
           <div className="col s12 m12">
 
             Title:
-          <div class="input-field inline"><input name="dept" defaultValue={project.Body1} ref={register({ required: true, maxLength: 80 })} />
+          <div class="input-field inline"><input name="dept" ref={register({ required: true, maxLength: 80 })} />
             </div>  </div>
 
-          <div className="col s12">First name
+         <div className="col s12">First name
                 <div className="input-field inline ">
               <input name="firstName" ref={register({ required: true, maxLength: 20 })} />
             </div>  </div>  </div>
-        <input name="title" ref={register({ pattern: /^[A-Za-z]+$/i })} />
+  <input name="title" ref={register({ pattern: /^[A-Za-z]+$/i })} />
+       
         <input name="age" type="number" ref={register({ min: 18, max: 99 })} />
-
-        <input name='furl'  defalt type='text' ref={register} />
-
+        <p>sanjay</p>
+       { id!=='a'?<img className="materialboxed" width="50" src={project.furl} />:'-'}
+        <input name='furl' type='text' ref={register} />
+        <p>file Uploader</p>
+        <input name='id1'  style={{ display: 'none' }} type='text' ref={register} />
         <p>file Uploader</p>
         <FileUploader
           accept="image/*"
@@ -100,10 +129,11 @@ const CreateNotice1 = ({ project }) => {
           onUploadStart={handleUploadStart}
           onUploadError={handleUploadError}
           onUploadSuccess={handleUploadSuccess}
-
+          onProgress={handleProgress}
         />
+        <p><input name='uploadProgress' defalt type='text' ref={register} /></p>
         <p>Progress: {100}</p>
-        <button onClick={handleUploadStart}>Uplaod</button>
+        <button onClick={deletefile}>delete file</button>
         <button onClick={handleSubmit(onSubmit)} >Subit</button>
       </form>
     </div>
@@ -121,7 +151,8 @@ const mapStateToProps = (state, ownProps) => {
   console.log(project, id)
   return {
     project: project,
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    id: id
   }
 }
 

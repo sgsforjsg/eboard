@@ -1,4 +1,4 @@
-export const createProject = (project) => {
+export const createProject = (project,p1) => {
   return (dispatch, getState, { getFirebase }) => {
 
     const firestore = getFirebase().firestore()
@@ -11,7 +11,7 @@ if(project.id1!=='a'){
       ...project,
       authorFirstName: 'profile.firstname',
       authorLastName: 'profile.lastname',
-      authorId: authorId,
+      authorId: authorId,  
       createdAt: new Date()
     }).then(() => {
       dispatch({ type: 'CREATE_VisitingDr_SUCCESS' });

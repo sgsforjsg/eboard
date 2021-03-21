@@ -7,20 +7,22 @@ import { useDispatch } from 'react-redux'
 import FileUploader from "react-firebase-file-uploader";
 import { createProject } from '../../store/actions/noticeActions'
 //import { Redirect } from 'react-router-dom'
-
+import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
 import M from "materialize-css";
 
 const CreateNotice1 = ({ project, id }) => {
   console.log(project, id)
-  useEffect(() => {
+  useEffect(() => {   
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems, {});
     var elems1 = document.querySelectorAll('.materialboxed');
-    var instances = M.Materialbox.init(elems1, {});
+    var instances = M.Materialbox.init(elems1, {});    
   }, []);
 
-
+  const { quill, quillRef } = useQuill();
+  console.log('quill',quill);    // undefined > Quill Object
+  console.log(quillRef);
 
 
   const { register, handleSubmit, setValue } = useForm({
@@ -30,19 +32,17 @@ const CreateNotice1 = ({ project, id }) => {
       firstName: id !== 'a' ? project.firstName : '',
       title: id !== 'a' ? project.title : '',
       age: id !== 'a' ? project.age : '',
-      body1: id !== 'a' ? project.body1 : '',
       uploadProgress: 0,
       id1: id,
-      quill: 'ff'
+      quill:'ff'
     }
   })
   const dispatch = useDispatch();
   const onSubmit = data => {
-    // const qdata= JSON.stringify(quill.getContents())
-    console.log(data)
+    const qdata= JSON.stringify(quill.getContents())
+    console.log(qdata)
     //alert('p')
-     dispatch(createProject(data))
-    // props.history.push('/view');
+    dispatch(createProject(data))
   }
   const myFunction = (e) => {
     const { value } = e.target;
@@ -106,40 +106,37 @@ const CreateNotice1 = ({ project, id }) => {
     console.log('delete file sucessfully')
   }
   return (
-    <div className="container ">
-      <form >
-        <div className="row" style={{ margin: "0" }}>
-          <div className="col s12">
-            First Name
-        <div className="input-field inline" style={{ margin: "0" }} >
-              <input name="firstName" id="first_name" type="text" ref={register({ required: true, maxLength: 80 })} />
-            </div>
-          </div>
-        </div>
-        <div className="row" style={{ margin: "0" }}>
-          <div className="col s12">
-            Dept------:
-        <div className="input-field inline" style={{ margin: "0" }}>
-              <input name="dept" id="first_name" type="text" ref={register({ required: true, maxLength: 80 })} />
-            </div>
-          </div>
-        </div>
+    <div className="container">
+      <form>
+        <div className="row">
+          <div className="col s12 m12">
 
-        {id !== 'a' ? <img className="materialboxed" alt="Image" width="50" src={project.furl} /> : '-'}
-        <input  hidden name='furl' type='text' ref={register()} />
-        Body
-        {project.body1}
-        <div className="row teal"  style={{ margin: "0" }}>
-          <div className="col s12">
-            
-        <div className="input-field" style={{ margin: "0" }}>
-        <textarea name="body1" id="textarea1"  style={{minHeight: "10rem" }} className="materialize-textarea" ref={register({ required: true, maxLength: 80 })}></textarea>
-                       
-            </div>
-          </div>
+            Title:
+          <div class="input-field inline"><input name="dept" ref={register({ required: true, maxLength: 80 })} />
+            </div>  </div>
+
+          <div className="col s12">First name
+                <div className="input-field inline ">
+              <input name="firstName" ref={register({ required: true, maxLength: 20 })} />
+            </div>  </div>  </div>
+        <div>
+          <textarea name="title" class="materialize-textarea" ref={register()}></textarea>
+          <label for="textarea1">Textarea</label>
         </div>
+        <div style={{ width: 500, height: 50 }}>
+          <div name='quill' ref={quillRef}   />
+        </div>
+        <p>Quill </p>
+
+
+
+        <input name="age" type="number" ref={register({ min: 18, max: 99 })} />
+        <p>sanjay</p>
+        {id !== 'a' ? <img className="materialboxed" width="50" src={project.furl} /> : '-'}
+        <input name='furl' type='text' ref={register} />
+        <p>file Uploader</p>
         <input name='id1' style={{ display: 'none' }} type='text' ref={register} />
-        
+        <p>file Uploader</p>
         <FileUploader
           accept="image/*"
           name="avatar"
@@ -151,7 +148,7 @@ const CreateNotice1 = ({ project, id }) => {
           onProgress={handleProgress}
         />
         <p><input name='uploadProgress' defalt type='text' ref={register} /></p>
-
+        <p>Progress: {100}</p>
         <button onClick={deletefile}>delete file</button>
         <button onClick={handleSubmit(onSubmit)} >Subit</button>
       </form>
